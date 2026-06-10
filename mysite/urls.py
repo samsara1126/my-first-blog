@@ -19,12 +19,17 @@ from django.urls import path
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from blog import views
 
+router = routers.DefaultRouter()
+# 대문자 'Post'로 등록해야 안드로이드 교안의 주소와 일치합니다.
+router.register(r'Post', views.PostViewSet)
 urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
-
+    path('api_root/', include(router.urls)),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

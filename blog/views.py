@@ -3,6 +3,9 @@ from django.utils import timezone
 from .models import Post
 from .forms import PostForm
 from django.contrib.auth.models import User
+from rest_framework import viewsets
+from .models import Post
+from .serializers import PostSerializer
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
@@ -28,6 +31,10 @@ def post_new(request):
         form = PostForm()
     return render(request, 'blog/post_edit.html', {'form': form})
 
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all().order_by('-created_date')
+    serializer_class = PostSerializer
+
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
@@ -46,3 +53,5 @@ def post_edit(request, pk):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
+
+    
